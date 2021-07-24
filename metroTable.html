@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- Metro 4 -->
+    <link rel="stylesheet" href="https://cdn.metroui.org.ua/v4/css/metro-all.min.css">
+
+    <title>Table - Metro 4 :: Popular HTML, CSS and JS library</title>
+
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center">My Metro 4 Table component work</h1>
+    <h3 class="text-center">Inspector, export, custom filter</h3>
+
+    <div>
+        <input type="checkbox" data-role="checkbox" data-caption="Rownum" onclick="$('#demo-table').attr('data-rownum', $(this).is(':checked'))">
+        <input type="checkbox" data-role="checkbox" data-caption="Checks" checked onclick="$('#demo-table').attr('data-check', $(this).is(':checked'))">
+        <button class="button alert" onclick="$('#demo-table').data('table').toggleInspector()">Open Inspector</button>
+    </div>
+
+    <div class="row flex-justify-between flex-nowrap ml-0 mr-0 mt-2">
+        <div class="w-100">
+            <div id="table-search"></div>
+        </div>
+        <div class="no-wrap ml-1">
+            <div id="table-actions" class="d-flex flex-align-center">
+                <div class="dropdown-button">
+                    <button class="button"><span class="mif-more-horiz"></span></button>
+                    <ul class="d-menu context shadow-3" data-role="dropdown">
+                        <li><a href="#" onclick="$('#demo-table').data('table').export('CSV', 'all', 'export-all.csv')"><span class="mif-upload2 fg-cyan icon"></span> Export all</a></li>
+                        <li><a href="#" onclick="$('#demo-table').data('table').export('CSV', 'all-filtered', 'export-all-filtered.csv')"><span class="mif-upload2 fg-cyan icon"></span> Export filtered</a></li>
+                        <li><a href="#" onclick="$('#demo-table').data('table').export('CSV', 'checked', 'export-checked.csv',{csvDelimiter:',', csvNewLine:'\r\n',includeHeader: true})"><span class="mif-upload2 fg-steel icon"></span> Export selected</a></li>
+                        <li><a href="#" onclick="$('#demo-table').data('table').export('CSV', 'view', 'export-view.csv')"><span class="mif-upload2 fg-brown icon"></span> Export current view</a></li>
+                    </ul>
+                </div>
+
+                <a onclick="$('#demo-table').data('table').toggleInspector()" class="button ml-1"><span class="mif-cog"></span></a>
+                 
+                
+            </div>
+        </div>
+    </div>
+
+    <table id="demo-table"
+           class="table table-border striped row-hover mt-4" style="min-width: 300px!important;"
+           data-role="table"
+           data-cls-table-top="row"
+           data-cls-search="cell-md-8"
+           data-cls-rows-count="cell-md-4"
+           data-table-search-title="Quick search:"
+           data-table-rows-count-title="Show:"
+           data-table-info-title="Showing $1 through $2 of $3"
+           data-all-records-title="All records"
+           data-rows="10"
+           data-rows-steps="-1, 10, 20, 50, 100"
+           data-info-wrapper="#table-info"
+           data-pagination-wrapper="#pagination"
+           data-rows-wrapper="#rows-count"
+           data-search-wrapper="#table-search"
+           data-inspector-title="Setup view"
+
+           data-view-save-mode="client"
+           data-check="true"
+           data-check-col-index="0"
+           data-check-store-key="MY_STORE_FOR_TABLE:$1"
+           data-horizontal-scroll="true"
+
+    ></table>
+
+    <div class="row">
+        <div class="cell-md-7">
+            <div id="pagination"></div>
+            <div id="table-info"></div>
+        </div>
+        <div class="cell-md-5">
+            <div id="rows-count"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    var tableFuncs = {
+        onDrawCell: function (td, raw_data, index, head) {
+            var html = '';
+            if (head.name === "is_active") {
+                html = parseInt(raw_data) === 1 ? "<span class='fg-green mif-checkmark'></span>" : "<span class='fg-red mif-minus js-archive-record'></span>";
+                td.html(html);
+            }
+
+        },
+
+        onDrawRow: function (tr) {
+            if (tr.find(".js-archive-record").length > 0) {
+                tr.addClass("archive-record bg-lightGray")
+            }
+        },
+
+
+    };
+
+
+    function loadTheData(){
+      google.script.run
+        .withSuccessHandler(mLoadData)
+        .withFailureHandler(showError)
+        .metroTableData();
+    }
+    function mLoadData(allData){
+      console.log(allData)
+      // var tbl = Metro.getPlugin("#demo-table","table")
+      // tbl.setData(allData);
+      // console.log(tbl.getHeads())
+      // console.log(tbl.getView())
+      $('#demo-table').data('table').setData(allData)
+    }
+    function showError(e){
+      window.alert("There was an error! " + e.message);
+    }
+
+    document.addEventListener("DOMContentLoaded",loadTheData())
+</script>
+
+    <!-- Metro 4 -->
+    <script src="https://cdn.metroui.org.ua/v4/js/metro.min.js"></script>
+</body>
+</html
